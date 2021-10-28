@@ -14,18 +14,18 @@ const initialState = [
 export const TodoApp = () => {
   const [todos, dispatch] = useReducer(todoReducer, initialState);
   
-  const [formValues, handleInputChange] = useForm({
+  const [{description}, handleInputChange, resetForm] = useForm({
       description:''
   })
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(!formValues.description) return
+    if(!description) return
 
     const newTodo = {
       id: new Date().getTime(),
-      desc: formValues.description,
+      desc: description,
       done: false,
     };
     const action = {
@@ -33,7 +33,8 @@ export const TodoApp = () => {
         payload: newTodo 
     }
     dispatch(action);
-
+    resetForm();
+    localStorage.setItem('tareas', JSON.stringify(todos))
   };
 
   return (
@@ -67,7 +68,7 @@ export const TodoApp = () => {
           <form onSubmit={handleSubmit}>
             <div className="d-grid gap-2">
               <input
-              value={formValues.description}
+              value={description}
               onChange={handleInputChange}
                 className="form-control"
                 type="text"

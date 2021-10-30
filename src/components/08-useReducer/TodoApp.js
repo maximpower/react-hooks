@@ -1,27 +1,47 @@
 import React, { useReducer } from "react";
 import { todoReducer } from "./todoReducer";
-import { useForm } from '../../hooks/useForm'
+import { useForm } from "../../hooks/useForm";
 import "./styles.css";
+import { useEffect } from "react/cjs/react.development";
 
-const initialState = [
-  {
-    id: new Date().getTime(),
-    desc: "Aprender React",
-    done: false,
-  },
-];
+const init = () => {
+  // return [
+  //   {
+  //     id: new Date().getTime(),
+  //     desc: "Aprender React",
+  //     done: false,
+  //   },
+  // ];
+
+  return JSON.parse(localStorage.getItem('todos')) || [];
+};
 
 export const TodoApp = () => {
-  const [todos, dispatch] = useReducer(todoReducer, initialState);
-  
-  const [{description}, handleInputChange, resetForm] = useForm({
-      description:''
-  })
+  const [todos, dispatch] = useReducer(todoReducer, [], init);
+
+  const [{ description }, handleInputChange, reset] = useForm({
+    description: "",
+  });
+
+  useEffect(()=>{
+    localStorage.setItem('todos', JSON.stringify(todos))
+  },[todos])
+
+  const handleDelete = (todoId) => {
+    console.log(todoId);
+
+    const action = {
+      type: 'remove',
+      payload: todoId
+    }
+
+    dispatch(action);
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(!description) return
+    if (description.trim().length <= 1) return;
 
     const newTodo = {
       id: new Date().getTime(),
@@ -29,12 +49,11 @@ export const TodoApp = () => {
       done: false,
     };
     const action = {
-        type: "add", 
-        payload: newTodo 
-    }
+      type: "add",
+      payload: newTodo,
+    };
     dispatch(action);
-    resetForm();
-    localStorage.setItem('tareas', JSON.stringify(todos))
+    reset();
   };
 
   return (
@@ -53,7 +72,7 @@ export const TodoApp = () => {
                   </p>
                   <button
                     className={"btn btn-danger"}
-                    onClick={() => dispatch({ type: "remove", payload: todo })}
+                    onClick={()=>handleDelete(todo.id)}
                   >
                     Eliminar
                   </button>
@@ -68,8 +87,8 @@ export const TodoApp = () => {
           <form onSubmit={handleSubmit}>
             <div className="d-grid gap-2">
               <input
-              value={description}
-              onChange={handleInputChange}
+                value={description}
+                onChange={handleInputChange}
                 className="form-control"
                 type="text"
                 name="description"

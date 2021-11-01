@@ -38,6 +38,13 @@ export const TodoApp = () => {
     dispatch(action);
   }
 
+  const handleToggle = (todoId) => {
+    dispatch({
+      type: 'edit',
+      payload: todoId
+    });
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -63,11 +70,15 @@ export const TodoApp = () => {
 
       <div className="row">
         <div className="col-7">
+        {/* TodoList, todos, handleDelete, handleToggle */}
           <ul className={"list-group list-group-flush"}>
             {todos.map((todo, i) => {
               return (
+                /* TodoListItem, todo, index, handleToggle, handleDelete */
                 <li key={todo.id} className={"list-group-item"}>
-                  <p className={"text-center"}>
+                  <p className={`${ todo.done && 'complete' }`}
+                    onClick={()=> handleToggle(todo.id)}
+                  >
                     {i + 1}. {todo.desc}
                   </p>
                   <button

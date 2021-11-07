@@ -1,7 +1,6 @@
 import React, { useReducer } from "react";
-import { todoReducer } from "./todoReducer";
 
-import { useEffect } from "react/cjs/react.development";
+import { todoReducer } from "./todoReducer";
 import { TodoList } from "./components/TodoList";
 import { TodoAdd } from "./components/TodoAdd";
 import "./styles.css";
